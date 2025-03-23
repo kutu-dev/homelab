@@ -38,6 +38,7 @@
           gzip
           cdrkit
           ansible
+          just
         ];
       };
     });

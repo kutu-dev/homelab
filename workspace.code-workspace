@@ -28,6 +28,7 @@
 			"dhcpv",
 			"homelab",
 			"indev",
+			"justfile",
 			"libisoburn",
 			"localechooser",
 			"netcfg",

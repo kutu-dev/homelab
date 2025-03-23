@@ -1,4 +1,4 @@
-- name: Setup the server
+- name: Clean and harden the root user
   hosts: user
 
   tasks:

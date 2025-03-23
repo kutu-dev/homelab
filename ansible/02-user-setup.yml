@@ -3,12 +3,15 @@
 
   tasks:
     - name: Setup UFW
-      ansible.builtin.include_tasks: tasks/ufw.yml
+      include_tasks: tasks/ufw.yml
 
     - name: Setup Docker
-      ansible.builtin.include_tasks: tasks/docker.yml
+      include_tasks: tasks/docker.yml
 
     - name: Clone homelab Git repository
-      ansible.builtin.git:
+      git:
         repo: https://github.com/kutu-dev/homelab.git
         dest: /home/homelab/repository
+
+    - name: Setup misc config files
+      include_tasks: tasks/config.yml
