@@ -7,18 +7,24 @@
 		{
 			"name": "Debian",
 			"path": "./debian"
+		},
+		{
+			"name": "Ansible",
+			"path": "./ansible"
 		}
 	],
 
 	"settings": {
 		"files.exclude": {
             "debian/": true,
+			"ansible/": true,
         },
 
 		"cSpell.words": [
 			"autoconfig",
 			"bsdtar",
 			"cdrom",
+			"containerd",
 			"dhcpv",
 			"homelab",
 			"indev",

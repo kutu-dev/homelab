@@ -1,0 +1,38 @@
+- name: Setup the basic server scaffolding to allow main user authentication
+  hosts: root
+
+  tasks:
+    - name: Setup APT
+      ansible.builtin.include_tasks: tasks/apt.yml
+
+    - name: Setup main user
+      user:
+        name: homelab
+        groups:
+          - sudo
+
+        comment: Homelab
+        create_home: yes
+        shell: /bin/bash
+
+        password: "{{ user_password | password_hash('sha512') }}"
+
+    - name: Create the SSH directory of the homelab user
+      file:
+        path: /home/homelab/.ssh
+        state: directory
+        mode: '0700'
+
+        owner: homelab
+        group: homelab
+
+    - name: Copy authorized_keys from root user to homelab user
+      copy:
+        src: /root/.ssh/authorized_keys
+        remote_src: true
+
+        dest: /home/homelab/.ssh/authorized_keys
+
+        owner: homelab
+        group: homelab
+        mode: "0644"

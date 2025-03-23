@@ -1,0 +1,8 @@
+- name: Setup the server
+  hosts: user
+
+  tasks:
+    - name: Remove authorized_keys from the root user
+      become: true
+      command:
+        cmd: rm -f /root/.ssh/authorized_keys

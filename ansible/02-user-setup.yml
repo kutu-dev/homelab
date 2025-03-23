@@ -1,0 +1,14 @@
+- name: Setup the server
+  hosts: user
+
+  tasks:
+    - name: Setup UFW
+      ansible.builtin.include_tasks: tasks/ufw.yml
+
+    - name: Setup Docker
+      ansible.builtin.include_tasks: tasks/docker.yml
+
+    - name: Clone homelab Git repository
+      ansible.builtin.git:
+        repo: https://github.com/kutu-dev/homelab.git
+        dest: /home/homelab/repository

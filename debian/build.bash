@@ -2,12 +2,14 @@
 
 #set -euo pipefail
 
+TMP_PATH="/tmp/homelab"
+
 clean_tmp() {
-    # Be able to delete everything
-    if ! [ -f "$TMP_PATH" ]; then
+    if ! [ -d "$TMP_PATH" ]; then
         return
     fi
     
+    # Be able to delete everything
     chmod -R u+w "$TMP_PATH"
     rm -rf "$TMP_PATH"
 }
@@ -18,6 +20,7 @@ SCRIPT_DIR_PATH="$(dirname "$0")"
 cd "$SCRIPT_DIR_PATH" || exit
 
 ISO_FILE=$1
+PUB_KEY_FILE=$2
 
 if [ "$ISO_FILE" == "" ]; then
     echo "Provide a Debian installation ISO file"
@@ -29,7 +32,15 @@ if ! [ -f "$ISO_FILE" ]; then
     exit 1
 fi
 
-TMP_PATH="/tmp/homelab"
+if [ "$PUB_KEY_FILE" == "" ]; then
+    echo "Provide a public key for authentication"
+    exit 1
+fi
+
+if ! [ -f "$PUB_KEY_FILE" ]; then
+    echo "The given public authentication file does not exist"
+    exit 1
+fi
 
 clean_tmp
 
@@ -60,6 +71,14 @@ find . -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
 
 chmod -w md5sum.txt
 
+# Add SSH public key
+chmod +w "$TMP_ISO_PATH"
+
+cat "$PUB_KEY_FILE" >> "$TMP_ISO_PATH/authorized_keys"
+
+chmod -w "$TMP_ISO_PATH"
+
+# Build final ISO
 cd "$INITIAL_CWD" || exit
 
 rm -f ./patched.iso
@@ -70,6 +89,7 @@ xorriso \
    \
    -map "$TMP_ISO_INSTALL_PATH" "/$ISO_INSTALL_DIR" \
    -map "$TMP_ISO_PATH/md5sum.txt" /md5sum.txt \
+   -map "$TMP_ISO_PATH/authorized_keys" /authorized_keys \
    \
    -boot_image any replay \
    \

@@ -37,6 +37,7 @@
           xorriso
           gzip
           cdrkit
+          ansible
         ];
       };
     });

@@ -1,0 +1,15 @@
+# This task should be run on the root user
+
+- name: Update and upgrade APT packages
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: full
+
+- name: Install APT packages
+  apt:
+    state: latest
+        
+    pkg:
+      - ufw
+      - sudo
