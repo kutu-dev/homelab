@@ -1,0 +1,17 @@
+services:
+  minecraft:
+    image: docker.io/library/itzg/minecraft-server:java21-alpine@sha256:a1f9c281308ca342e26e8e738bd49564ce58056f910b67debeb573f99e341750
+
+    ports:
+      - 25565:25565
+
+    environment:
+      - TYPE=FABRIC
+      - VERSION=1.20
+      - EULA=TRUE
+
+      - INIT_MEMORY=1G
+      - MAX_MEMORY=6G
+
+    volumes:
+      - /home/homelab/data/minecraft:/data

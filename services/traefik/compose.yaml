@@ -1,0 +1,50 @@
+services:
+  traefik:
+    image: docker.io/library/traefik:v3.3@sha256:cc11989f418e2cfe5e60fc40c92c1813be847f58eda15eced7d5ac890255ad9e
+
+    # Needs to be the root user to access the Docker socket
+    user: root:root
+
+    ports:
+      - 80:80
+      - 443:443
+
+    volumes:
+      - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - /home/homelab/data/traefik/acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.traefik.rule=Host("traefik.n.dobon.dev") || Host("traefik.v.dobon.dev")
+      - traefik.http.routers.traefik.service=api@internal
+
+    environment:
+      - PORKBUN_API_KEY_FILE=/run/secrets/traefik_porkbun_api_key
+      - PORKBUN_SECRET_API_KEY_FILE=/run/secrets/traefik_porkbun_secret_api_key
+
+    secrets:
+      - traefik_porkbun_api_key
+      - traefik_porkbun_secret_api_key
+
+    networks:
+      - shared
+
+    healthcheck:
+      test: traefik healthcheck --ping
+      interval: 20s
+      start_period: 30s
+      timeout: 5s
+      retries: 10
+
+secrets:
+  traefik_porkbun_api_key:
+    external: true
+  traefik_porkbun_secret_api_key:
+    external: true
+
+networks:
+  shared:
+    name: shared
+    external: true

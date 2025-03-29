@@ -1,0 +1,98 @@
+services:
+  seafile-maria-db:
+    image: docker.io/library/mariadb:11.7.2-ubi9@sha256:997db22450ea775ec7aa64dd2b1921572f7df5fb45e0e88db6b9def5bba1038c
+
+    user: "${DOCKER_USER_UID}:${DOCKER_USER_UID}"
+
+    expose:
+      - 3306
+
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/seafile_maria_db_root_password
+      - MYSQL_LOG_CONSOLE=true
+      - MARIADB_AUTO_UPGRADE=1
+
+    volumes:
+      - "/home/homelab/data/seafile/maria-db:/var/lib/mysql"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "/usr/local/bin/healthcheck.sh",
+          "--connect",
+          "--mariadbupgrade",
+          "--innodb_initialized",
+        ]
+      interval: 20s
+      start_period: 30s
+      timeout: 5s
+      retries: 10
+
+    secrets:
+      - seafile_maria_db_root_password
+
+    networks:
+      - shared
+
+  seafile-memcached:
+    image: docker.io/library/memcached:1.6.38-alpine3.21@sha256:342c0a340970f876bca579e73e8e8bbf8a2be0423fe6a288fb5c354ab6eb2bb4
+    
+    user: "${DOCKER_USER_UID}:${DOCKER_USER_UID}"
+
+    healthcheck:
+      test: ["CMD", "/bin/nc", "-z", "127.0.0.1", "11211"]
+      interval: 20s
+      start_period: 30s
+      timeout: 5s
+      retries: 10
+
+    entrypoint: memcached -m 256
+
+  seafile:
+    image: seafileltd/seafile-mc:12.0.11@sha256:4ab87f4b7fd9a712f614386c3362049d1701161e07e0f88681fdddcc3e543680
+
+    # Can only do either root or a custom fragile user deescalation system that uses a hardcoded username
+    user: root:root
+
+    expose:
+      - 80
+
+    volumes:
+      - /home/homelab/data/seafile/seafile-mc:/shared
+
+    environment:
+      - DB_HOST=seafile_seafile-maria-db
+      - DB_PORT=3306
+      - DB_USER=seafile
+      - DB_ROOT_PASSWD=${DB_ROOT_PASSWD}
+
+      - DB_PASSWORD=${DB_PASSWORD}
+
+      - TIME_ZONE=Europe/Madrid
+
+      - INIT_SEAFILE_ADMIN_EMAIL=admin.placeholder@example.com
+      - INIT_SEAFILE_ADMIN_PASSWORD=CHANGE_ME
+
+      - SEAFILE_SERVER_HOSTNAME=seafile.v.dobon.dev
+
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+
+      - SEAFILE_LOG_TO_STDOUT=true
+
+    networks:
+      - shared
+
+    labels:
+      - traefik.enable=true
+
+      - traefik.http.routers.seafile.rule=Host("seafile.n.dobon.dev") || Host("seafile.v.dobon.dev")
+
+secrets:
+  seafile_maria_db_root_password:
+    external: true
+
+networks:
+  shared:
+    name: shared
+    external: true

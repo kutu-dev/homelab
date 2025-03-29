@@ -1,55 +1,68 @@
 {
-	"folders": [
-		{
-			"name": "Root",
-			"path": ".",
-		},
-		{
-			"name": "Debian",
-			"path": "./debian"
-		},
-		{
-			"name": "Ansible",
-			"path": "./ansible"
-		}
-	],
+  "folders": [
+    {
+      "name": "Root",
+      "path": ".",
+    },
+    {
+      "name": "Debian",
+      "path": "./debian",
+    },
+    {
+      "name": "Ansible",
+      "path": "./ansible",
+    },
+    {
+      "name": "Services",
+      "path": "./services",
+    },
+    {
+      "name": "Scripts",
+      "path": "./scripts",
+    },
+  ],
 
-	"settings": {
-		"files.exclude": {
-            "debian/": true,
-			"ansible/": true,
-        },
+  "settings": {
+    "files.exclude": {
+      "debian/": true,
+      "ansible/": true,
+      "services/": true,
+      "scripts/": true,
+    },
 
-		"cSpell.words": [
-			"autoconfig",
-			"bsdtar",
-			"cdrom",
-			"containerd",
-			"dhcpv",
-			"homelab",
-			"indev",
-			"justfile",
-			"libisoburn",
-			"localechooser",
-			"netcfg",
-			"nixpkgs",
-			"outdev",
-			"pkgs",
-			"preconfiguration",
-			"preseed",
-			"preseeded",
-			"Preseeding",
-			"xorriso"
-		],
-	},
+    "cSpell.words": [
+      "autoconfig",
+      "bsdtar",
+      "cdrom",
+      "containerd",
+      "dhcpv",
+      "homelab",
+      "indev",
+      "justfile",
+      "libisoburn",
+      "localechooser",
+      "netcfg",
+      "nixpkgs",
+      "outdev",
+      "pkgs",
+      "preconfiguration",
+      "preseed",
+      "preseeded",
+      "Preseeding",
+      "xorriso",
+    ],
+  },
 
-	"extensions": {
-		"recommendations": [
-			// General
-			"streetsidesoftware.code-spell-checker",
+  "extensions": {
+    "recommendations": [
+      // General
+      "streetsidesoftware.code-spell-checker",
 
-			// Nix
-			"bbenoist.Nix",
-		],
-	},
+      // Docker Compose
+      "p1c2u.docker-compose",
+
+      // Nix
+      "bbenoist.Nix",
+    ],
+  },
 }

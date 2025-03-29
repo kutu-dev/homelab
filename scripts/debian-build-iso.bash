@@ -1,48 +1,36 @@
 #!/usr/bin/env bash
-
-#set -euo pipefail
-
-TMP_PATH="/tmp/homelab"
-
-clean_tmp() {
-    if ! [ -d "$TMP_PATH" ]; then
-        return
-    fi
-    
-    # Be able to delete everything
-    chmod -R u+w "$TMP_PATH"
-    rm -rf "$TMP_PATH"
-}
+set -euo pipefail
 
 INITIAL_CWD="$(pwd)"
-SCRIPT_DIR_PATH="$(dirname "$0")"
+cd "$(dirname "${BASH_SOURCE[0]}")/.." || exit
 
-cd "$SCRIPT_DIR_PATH" || exit
+source ./scripts/modules/_logging.bash
+source ./scripts/modules/_tmp.bash
 
 ISO_FILE=$1
 PUB_KEY_FILE=$2
 
 if [ "$ISO_FILE" == "" ]; then
-    echo "Provide a Debian installation ISO file"
+    error "Please provide a Debian installation ISO file"
     exit 1
 fi
 
 if ! [ -f "$ISO_FILE" ]; then
-    echo "The given Debian installation ISO file does not exist"
+    error "The given Debian installation ISO file does not exist"
     exit 1
 fi
 
 if [ "$PUB_KEY_FILE" == "" ]; then
-    echo "Provide a public key for authentication"
+    error "Please provide a public key for authentication"
     exit 1
 fi
 
 if ! [ -f "$PUB_KEY_FILE" ]; then
-    echo "The given public authentication file does not exist"
+    error "The given public authentication file does not exist"
     exit 1
 fi
 
-clean_tmp
+clean-tmp
 
 TMP_ISO_PATH="$TMP_PATH/debian/iso"
 mkdir -p "$TMP_ISO_PATH"
@@ -56,7 +44,7 @@ TMP_ISO_INSTALL_PATH="$TMP_ISO_PATH/$ISO_INSTALL_DIR"
 chmod +w -R "$TMP_ISO_INSTALL_PATH"
 
 gunzip "$TMP_ISO_INSTALL_PATH/initrd.gz"
-echo ./preseed.cfg | cpio -H newc -o -A -F "$TMP_ISO_INSTALL_PATH/initrd"
+echo ./debian/preseed.cfg | cpio -H newc -o -A -F "$TMP_ISO_INSTALL_PATH/initrd"
 gzip "$TMP_ISO_INSTALL_PATH/initrd"
 
 chmod -w -R "$TMP_ISO_INSTALL_PATH/"
@@ -66,8 +54,12 @@ cd "$TMP_ISO_PATH" || exit
 
 chmod +w md5sum.txt
 
-# The warning about ""./debian" is ok as it is a symlink to "."
+# The warning about ""./debian" is ok as it is a symlink to ".", not the safest thing thought
+set +e
+# The mention of md5sum.txt is to IGNORE it, not read from it
+# shellcheck disable=SC2094
 find . -follow -type f ! -name md5sum.txt -print0 | xargs -0 md5sum > md5sum.txt
+set -e
 
 chmod -w md5sum.txt
 
@@ -96,4 +88,4 @@ xorriso \
    -compliance no_emul_toc \
    -padding included
 
-clean_tmp
+clean-tmp

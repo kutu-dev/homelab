@@ -1,0 +1,41 @@
+entryPoints:
+  web:
+    address: :80
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: :443
+
+    http:
+      tls:
+        certresolver: le
+        domains:
+          - main: dobon.dev
+            sans:
+              - "*.dobon.dev"
+              - "*.n.dobon.dev"
+              - "*.v.dobon.dev"
+
+certificatesResolvers:
+  le:
+    acme:
+      email: the.kutu.dev@gmail.com
+      storage: acme.json
+      dnsChallenge:
+        provider: porkbun
+        delayBeforeCheck: 0
+
+providers:
+  docker:
+    exposedByDefault: false
+
+ping: {}
+
+api:
+  dashboard: true
+
+log:
+  level: DEBUG

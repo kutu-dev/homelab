@@ -1,0 +1,21 @@
+update_interval_minutes: 5
+timeout: 20s
+
+credentials:
+  prod:
+    porkbun_api_key: "<<<YOUR PORKBUN API KEY HERE>>>"
+    porkbun_secret_key: <<<YOUR PORKBUN SECRET KEY HERE>>>
+
+records:
+  - domain: <<<YOUR DOMAIN HERE>>>
+    ipv4: true
+    credentials: prod
+
+  - domain: <<<YOUR DOMAIN HERE>>>
+    host: "*"
+    ipv4: true
+    credentials: prod
+
+metrics:
+  enabled: false
+  port: 7879

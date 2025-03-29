@@ -1,8 +1,7 @@
-Add pipeline failure on bash script
+# TODO
 
-Secret
-In preseed.cfg `d-i passwd/root-password-crypted` entry
-
-chmod u+x *.bash
-
-Start readme explanation
+- fail2ban
+- Logging?
+- Backups
+- Packwiz
+- Status

@@ -1,20 +1,19 @@
+- name: Disable lid suspend trigger
+  become: true
 
-    - name: Disable lid suspend trigger
-      become: true
+  copy:
+    src: ./logind.conf
+    dest: /etc/systemd/logind.conf
+    owner: root
+    group: root
+    mode: "0644"
 
-      copy:
-        src: ./logind.conf
-        dest: /etc/systemd/logind.conf
-        owner: root
-        group: root
-        mode: '0644'
+- name: Apply hardened OpenSSH server configuration
+  become: true
 
-    - name: Apply hardened OpenSSH server configuration
-      become: true
-
-      copy:
-        src: ./sshd_config
-        dest: /etc/ssh/sshd_config
-        owner: root
-        group: root
-        mode: '0644'
+  copy:
+    src: ./sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0644"

@@ -21,7 +21,7 @@
       file:
         path: /home/homelab/.ssh
         state: directory
-        mode: '0700'
+        mode: "0700"
 
         owner: homelab
         group: homelab

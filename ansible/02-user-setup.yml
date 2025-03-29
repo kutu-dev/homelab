@@ -12,6 +12,15 @@
       git:
         repo: https://github.com/kutu-dev/homelab.git
         dest: /home/homelab/repository
+        update: false
 
     - name: Setup misc config files
       include_tasks: tasks/config.yml
+
+    - name: Make required data directories
+      file:
+        path: "/home/homelab/data/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop:
+        - minecraft

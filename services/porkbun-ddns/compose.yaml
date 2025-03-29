@@ -1,0 +1,8 @@
+services:
+  porkbun-ddns:
+    image: ghcr.io/jadolg/porkbun-ddns:v1.5.2@sha256:887d2cf4abfeced19dc7d8bcc11ec87f3287dcce6b4264412a3044ad3c817ef4
+
+    user: "${DOCKER_USER_UID}:${DOCKER_USER_UID}"
+
+    volumes:
+      - ./config.yaml:/config.yaml:ro

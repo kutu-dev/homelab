@@ -3,7 +3,6 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 # SPDX-License-Identifier: MPL-2.0
-
 {
   description = "The main monorepo of the VALESC digital artisans group";
 
@@ -38,7 +37,7 @@
           gzip
           cdrkit
           ansible
-          just
+          nodePackages.prettier
         ];
       };
     });
